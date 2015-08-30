@@ -27,7 +27,7 @@ class TwitterApi:
                 keys['access_token'],
                 keys['access_token_secret'])
 
-    def post(self,statustext):
+    def tweet(self,statustext):
         """ツイートする"""
         url = 'https://api.twitter.com/1.1/statuses/update.json'
         params = {'status':statustext}
