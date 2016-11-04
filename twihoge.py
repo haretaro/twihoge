@@ -17,6 +17,19 @@ class TwitterApi:
         self.locale = 'ja'
         self.woeid = woeids['Japan']
 
+    #フォロワーのjsonリストを返す
+    def followers(self, screen_name, count=20):
+        url = 'https://api.twitter.com/1.1/followers/list.json'
+        params = {'screen_name':screen_name,
+                'count':count}
+        r = self.session.get(url,params = params)
+        return r
+
+    #フォロワーのscreen_nameを返す
+    def followers_name(self, screen_name, count = 20):
+        f = self.followers(screen_name,count=count)
+        return [u['screen_name']for u in f.json()['users']]
+
     def load_json_file(filename):
         """キーを書いたjsonファイルを読んでインスタンスを返す"""
         keyfile = open(filename)
@@ -26,13 +39,6 @@ class TwitterApi:
                 keys['consumer_secret'],
                 keys['access_token'],
                 keys['access_token_secret'])
-
-    def tweet(self,statustext):
-        """ツイートする"""
-        url = 'https://api.twitter.com/1.1/statuses/update.json'
-        params = {'status':statustext}
-        r = self.session.post(url,params = params)
-        return r
 
     def search(self,query,count=5,resulttype='recent'):
         """query:検索文字列
@@ -67,3 +73,14 @@ class TwitterApi:
         trends = res.json()[0]['trends']
         names = [trend['name'] for trend in trends]
         return names
+
+    def tweet(self,statustext):
+        """ツイートする"""
+        url = 'https://api.twitter.com/1.1/statuses/update.json'
+        params = {'status':statustext}
+        r = self.session.post(url,params = params)
+        return r
+
+    #フォローしてないフォロワーを返す
+    def unfollowing_followers(self, screen_name):
+        followers = self.followers(screen_name, count=200)
