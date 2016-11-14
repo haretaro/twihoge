@@ -30,6 +30,13 @@ class TwitterApi:
         f = self.followers(screen_name,count=count)
         return [u['screen_name']for u in f.json()['users']]
 
+    #idからstatus を取得
+    def get_status(self, id_str):
+        url = 'https://api.twitter.com/1.1/statuses/show.json'
+        params = {'id': id_str}
+        r = self.session.get(url, params = params)
+        return r
+
     def load_json_file(filename):
         """キーを書いたjsonファイルを読んでインスタンスを返す"""
         keyfile = open(filename)
